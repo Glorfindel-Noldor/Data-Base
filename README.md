@@ -2,3 +2,5 @@
 2) npm install react
 3) npm install react-router
 4) npm install react-router-dom
+5) pipenv install 
+6) pipenv install ipdb
