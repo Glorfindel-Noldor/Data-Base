@@ -50,5 +50,25 @@ class Sub:
         pass
 
     @classmethod
-    def instance_from_db(cls):
+    def get_by_id(cls):
         pass
+
+    @classmethod
+    def get_all_by_foreign_id(cls):
+        pass
+
+    @classmethod
+    def instance_from_db(cls, row):
+        obj_instance = cls.all.get(row[0])
+
+        if obj_instance:
+            obj_instance.id         = row[0]
+            obj_instance.log        = row[1]
+            obj_instance.foreign_id = row[2]
+
+        else:
+            obj_instance = cls(row[1], row[2])
+            obj_instance.id = row[0]
+            cls.all[obj_instance.id] = obj_instance
+
+        return obj_instance;
