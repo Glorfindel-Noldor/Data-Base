@@ -5,10 +5,10 @@ class Main:
 
     all = {}
 
-    def __init__(self, name, email, id):
+    def __init__(self, id, name, email):
+        self.id = id
         self.name = name
         self.email= email
-        self.id = id
 
     @property
     def name(self):
@@ -70,7 +70,7 @@ class Main:
 
     @classmethod
     def create(cls, name, email):
-        new_user = cls(name, email)
+        new_user = cls(None, name, email)
         new_user.save()
         return new_user
 
@@ -100,8 +100,20 @@ class Main:
         return cls.instance_from_db(row) if row else None
     
     @classmethod
-    def get_all_sub(cls):
-        pass
+    def get_all(cls):
+        sql = """
+            SELECT * FROM users;
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+
+    def get_all_sub(self):
+        from engine.Sub import Sub
+        sql = """
+            SELECT * FROM logs WHERE foreign_id = ? ;
+        """
+        rows = CURSOR.execute(sql, (self.id, )).fetchall()
+        return [Sub.instance_from_db(row) for row in rows]
 
     @classmethod
     def instance_from_db(cls, row):
@@ -112,14 +124,6 @@ class Main:
             obj_instance.name = row[1]
             obj_instance.email = row[2]
         else:
-            obj_instance = cls(row[1], row[2])
-            obj_instance.id = row[0]
+            obj_instance = cls(row[0], row[1], row[2])
             cls.all[obj_instance.id] = obj_instance
         return obj_instance
-
-
-
-
-
-if __name__ == "__main___":
-    Main()

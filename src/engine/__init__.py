@@ -6,7 +6,6 @@ CURSOR = CONN.cursor()
 
 app = Flask(__name__)
 
-
 @app.route('/api/data', methods=['GET'])
 def get_data():
 
@@ -29,4 +28,3 @@ def add_data():
     CONN.close()
 
     return jsonify({"message": "User added successfully!"}), 201
-

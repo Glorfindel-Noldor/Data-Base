@@ -1,13 +1,14 @@
-#these are the logs
+from . import CONN, CURSOR
+
 
 class Sub:
 
     all = {}
 
-    def __init__(self, log, foreign_id, id):
+    def __init__(self, id, log, foreign_id):
+        self.id = id
         self.log = log
         self.foreign_id = foreign_id
-        self.id = id
     
     @property
     def log(self):
@@ -30,32 +31,73 @@ class Sub:
     
     @classmethod
     def drop_table(cls):
-        pass
-
+        sql = """
+            DROP TABLE IF EXISTS logs;
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+        
     @classmethod
     def create_table(cls):
-        pass
+        sql = """
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                log TEXT,
+                foreign_id INTEGER,
+                FOREIGN KEY(foreign_id) REFERENCES users(id)
+            );
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
+    def save(self):
+        sql = """
+            INSERT INTO logs (log, foreign_id)
+            VALUES (?, ?);
+        """
+        CURSOR.execute(sql, (self.log, self.foreign_id))
+        CONN.commit()
+        self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
 
     @classmethod
-    def save(cls):
-        pass
-
-    def create(self):
-        pass
+    def create(cls, log, foreign_id):
+        new_log = cls(None, log, foreign_id)
+        new_log.save()
+        return new_log
 
     def delete(self):
-        pass
+        sql = """
+            DELETE FROM logs
+                WHERE id = ? ;
+        """
+        CURSOR.execute(sql, (self.id, ))
+        CONN.commit()
+        del type(self).all[self.id]
 
     def update(self):
-        pass
+        sql = """
+            UPDATE logs
+            SET log = ?  
+            WHERE id = ?
+        """
+        CURSOR.execute(sql, (self.log, ))
 
     @classmethod
-    def get_by_id(cls):
-        pass
+    def get_by_id(cls, id):
+        sql = """
+            SELECT * FROM logs WHERE id = ? ;
+        """
+        row = CURSOR.execute(sql, (id, )).fetchone()
+        return cls.instance_from_db(row) if row else None
 
     @classmethod
-    def get_all_by_foreign_id(cls):
-        pass
+    def get_all_by_foreign_id(cls, foreign_id):
+        sql = """
+            SELECT * FROM logs WHERE foreign_id = ? ;
+        """
+        rows = CURSOR.execute(sql, (foreign_id, )).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
 
     @classmethod
     def instance_from_db(cls, row):
@@ -67,8 +109,7 @@ class Sub:
             obj_instance.foreign_id = row[2]
 
         else:
-            obj_instance = cls(row[1], row[2])
-            obj_instance.id = row[0]
+            obj_instance = cls(row[0], row[1], row[2])
             cls.all[obj_instance.id] = obj_instance
 
         return obj_instance;
