@@ -2,10 +2,9 @@ from Main import Main
 from Sub import Sub
 
 def new_user():
-    user    = Main()
     name    = input('user name')
     email   =   input('users e-mail')
-    user.create(name, email)
+    Main.create(name, email)
 
 def users_log(foreign_id):
     logger = Sub()
@@ -21,13 +20,13 @@ def del_log(log):
     log.delete()
 
 def update_user(user):
-    name = input('new name')
-    email = input('new email')
-    user.update(name, email)
+    user.name = input('new name')
+    user.email = input('new email')
+    user.update()
 
-def update_log(id):
-    log = input('edit log:\t')
-    Sub.update(log, id)
+def update_log(log_instance):
+    log_instance.log = input('edit log:\t')
+    log_instance.update()
 
 def all_users():
     for user in Main.get_all():
