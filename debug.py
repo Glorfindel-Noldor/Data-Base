@@ -8,6 +8,7 @@ def debug():
         Sub.drop_table()
         Main.create_table()
         Sub.create_table()
+        print('table set')
         ipdb.set_trace()
     except:
         raise ValueError('tables not created and failed to debug')
