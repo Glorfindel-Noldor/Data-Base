@@ -1,4 +1,4 @@
-from . import CONN, CURSOR
+from engine.__init__ import CONN, CURSOR
 import re
 
 class Main:
