@@ -1,5 +1,4 @@
-from engine.__init__ import CONN, CURSOR
-
+from src.engine import CONN, CURSOR
 
 class Sub:
 

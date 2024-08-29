@@ -2,11 +2,15 @@ import React from "react";
 import { useOutletContext } from 'react-router-dom';
 
 function Home(){
-    const text = useOutletContext()
+    const userLogs = useOutletContext()
+
+    const user_names = userLogs.map((user)=>(<h6 key={user.id}>{user.name}</h6>))
+
 
     return(
         <>
-            <h1>{text}</h1>
+            <header>welcome</header>
+            <div>users: {user_names}</div>
         </>
     )
 }
