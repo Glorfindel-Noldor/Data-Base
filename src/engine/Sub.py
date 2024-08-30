@@ -1,4 +1,4 @@
-from src.engine import CONN, CURSOR
+from . import CONN, CURSOR
 
 class Sub:
 

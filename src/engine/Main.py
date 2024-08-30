@@ -1,4 +1,4 @@
-from src.engine import CONN, CURSOR
+from . import CONN, CURSOR
 import re
 
 class Main:
@@ -91,6 +91,7 @@ class Main:
         """
         CURSOR.execute(sql, (self.name, self.email, self.id))
         CONN.commit()
+
     @classmethod
     def get_by_id(cls,id_):
         sql = """

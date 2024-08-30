@@ -8,6 +8,7 @@ ipdb = "*"
 flask = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
+flask-cors = "*"
 
 [dev-packages]
 

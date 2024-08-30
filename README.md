@@ -7,4 +7,9 @@
 7 ) pipenv install flask (Flask, request, jsonify)
 8 ) import re (regular expression) for email check
 9 ) pipenv install sqlalchemy flask-sqlalchemy (SQLAlchemy)
-10)
+10) pipenv install flask-cors (CORS)
+
+
+
+a) npm run flask
+b) npm start

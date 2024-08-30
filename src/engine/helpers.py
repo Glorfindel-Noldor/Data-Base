@@ -1,23 +1,30 @@
+from .Main import Main
+from .Sub import Sub
+
+#-------------------
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from engine.Main import Main
-from engine.Sub import Sub
+from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' #my data base is called `database.db`
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' 
+CORS(app)
+db = SQLAlchemy(app)
 
-db = SQLAlchemy(app) # is `app` why in my npm package.json "flask": "FLASK_APP=`app`.py flask run" because i do not have any file called app.py in my file structure 
-
-class User(db.Model): #why am i creating columns when isnt that what ive already done in Main and Sub ?
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)   
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-
-
-
+#-------------------
 
 @app.route('/user/new', methods=['POST'])
-def new_user():
+def new_user(js_input_name, js_input_email):
+
+    var_name = js_input_name
+    var_email= js_input_email
+
+
     try:
         data        =   request.json
         var_name    = data.get('name')
@@ -28,9 +35,9 @@ def new_user():
         db.session.add(new_user) #these are the only two new lines correct ?
         db.commit()             #why am i committing when ive already done this in Main and Sub?
         return jsonify({
-            'id': new_user.id,
+            'id':   new_user.id,
             'name': new_user.name,
-            'email': new_user.email
+            'email':new_user.email
         }), 201
     except ValueError:
             return jsonify({'error': str(ValueError)}), 400
@@ -46,12 +53,11 @@ def users_log(foreign_id):
             raise ValueError('var_log must be str and var_foreign_id must be int')
         new_log = Sub.create(var_log, foreign_id)
         return jsonify({
-            'log': new_log.log,
-            'foreign_id' : new_log.foreign_id
+            'log'           : new_log.log,
+            'foreign_id'    : new_log.foreign_id
         }), 201
     except ValueError:
         return jsonify({'error': str(ValueError)}), 400
-
 
 
 @app.route('/user/delete/<int:id>/', methods=['DELETE'])
@@ -61,8 +67,7 @@ def del_user(user):
     user.delete()
 
 
-
-@app.route('/user/<int:id>/delete-log/<int:id>', methods=['DELETE'])
+@app.route('/user/<int:id>/delete-log/<int:log_id>', methods=['DELETE'])
 def del_log(log):
     log.delete()
 
@@ -74,7 +79,7 @@ def update_user(user):
     user.update()
 
 
-@app.rout('/user/<int:id>/update-log/<int:foreign_id>', methods=['PUT'])
+@app.route('/user/<int:id>/update-log/<int:foreign_id>', methods=['PUT'])
 def update_log(log_instance):
     log_instance.log = input('edit log:\t')
     log_instance.update()
@@ -95,6 +100,7 @@ def all_users():
         return jsonify(user_list), 200
     except ValueError:
         return jsonify({'error': str(ValueError)}), 500
+
 
 @app.route('/user/<int:id>/all-logs/<int:foreign_id>', methods=['GET'])
 def all_users_logs(foreign_id):
