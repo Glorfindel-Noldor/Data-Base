@@ -1,46 +1,70 @@
 from .Main import Main
 from .Sub import Sub
 
-#-------------------
+#------------------------------------------------------------------------------     FLASK 
 
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' 
-CORS(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///src/instance/database.db'    #fixed url
 db = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)   
-    name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-#-------------------
+CORS(app)
 
-@app.route('/user/new', methods=['POST'])
-def new_user(js_input_name, js_input_email):
 
-    var_name = js_input_name
-    var_email= js_input_email
+# class User(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(80), nullable=False)
+#     email = db.Column(db.String(120), unique=True, nullable=False)
 
+#------------------------------------------------------------------------------     ^
+
+
+@app.route('/new-user', methods=['POST'])
+def new_user():
 
     try:
-        data        =   request.json
-        var_name    = data.get('name')
-        var_email   = data.get('email')
+        data = request.get_json()
+        app.logger.debug(f"Received data: {data}")
+        var_name = data.get('name')
+        var_email = data.get('email')
+
         if not var_name or not var_email:
-            raise ValueError('user name must be str and or email must abide format')
-        new_user    =   Main.create(var_name, var_email)
-        db.session.add(new_user) #these are the only two new lines correct ?
-        db.commit()             #why am i committing when ive already done this in Main and Sub?
+            raise ValueError('User name and email are required.')
+
+        # Create a new User instance
+        new_user = Main.create(var_name, var_email)
+        db.session.add(new_user)  # Add user to the session
+        db.session.commit()       # Commit the transaction to the database
+
         return jsonify({
-            'id':   new_user.id,
+            'id': new_user.id,
             'name': new_user.name,
-            'email':new_user.email
+            'email': new_user.email
         }), 201
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/all-users', methods=['GET'])
+def all_users():
+    try:
+        users   = Main.get_all()
+        user_list = []
+
+        for user in users:
+            user_list.append({
+                'id': user.id,
+                'name': user.name,
+                'email': user.email
+            })
+        return jsonify(user_list), 200
     except ValueError:
-            return jsonify({'error': str(ValueError)}), 400
+        return jsonify({'error': str(ValueError)}), 500
 
 
 @app.route('/user/<int:id>/new-log/', methods=['POST'])
@@ -59,6 +83,8 @@ def users_log(foreign_id):
     except ValueError:
         return jsonify({'error': str(ValueError)}), 400
 
+
+#-------------------------------------------------------------- UNDER CONSTRUCTION 
 
 @app.route('/user/delete/<int:id>/', methods=['DELETE'])
 def del_user(user):
@@ -83,23 +109,6 @@ def update_user(user):
 def update_log(log_instance):
     log_instance.log = input('edit log:\t')
     log_instance.update()
-
-
-@app.route('/user/all-users', methods=['GET'])
-def all_users():
-    try:
-        users   = Main.get_all()
-        user_list = []
-
-        for user in users:
-            user_list.append({
-                'id': user.id,
-                'name': user.name,
-                'email': user.email
-            })
-        return jsonify(user_list), 200
-    except ValueError:
-        return jsonify({'error': str(ValueError)}), 500
 
 
 @app.route('/user/<int:id>/all-logs/<int:foreign_id>', methods=['GET'])

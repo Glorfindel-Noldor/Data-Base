@@ -81,7 +81,8 @@ class Main:
         """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
-        del type(self).all[self.id]
+        if self.id in type(self).all:
+            del type(self).all[self.id]
     
     def update(self):
         sql = """
@@ -128,3 +129,4 @@ class Main:
             obj_instance = cls(row[0], row[1], row[2])
             cls.all[obj_instance.id] = obj_instance
         return obj_instance
+

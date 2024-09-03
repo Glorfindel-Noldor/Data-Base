@@ -1,3 +1,33 @@
-.transparent {
-    opacity: 0.5; /* 50% transparent */
+.hello-background {
+    background-image: url('./images/hello.jpg');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.broken-background {
+    background-image: url('./images/broken.jpg');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.new-user {
+    background-image: url('./images/image_fx_\ \(2\).jpg');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.right-float { /*class*/
+    float: right;
+}
+
+#glass{ /*id*/
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }

@@ -1,12 +1,15 @@
 import Main from "./components/Main"
 import Home from "./components/Home"
 import Readme from "./components/Readme"
+import Broken from "./components/Broken"
+import LogIn from "./components/LogIn"
+import CreateUser from "./components/CreateUser"
 
 const routes = [
     {
         path : "/",
         element : <Main/>,
-        errorElement : <h1>Broken Page !</h1>,
+        errorElement : <Broken/>,
         children : [
             {
                 path : "home",
@@ -15,6 +18,14 @@ const routes = [
             {
                 path : "readme",
                 element : <Readme/>
+            },
+            {
+                path : "log-in",
+                element : <LogIn/>
+            },
+            {
+                path : "create-user",
+                element : <CreateUser/>
             }
         ]
     },

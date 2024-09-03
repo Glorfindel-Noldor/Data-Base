@@ -1,29 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import Navbar from "./Navbar";
-const API_ALL_USERS = 'http://127.0.0.1:5000/user/all-users'
+const API_ALL_USERS = 'http://localhost:5000/all-users'; 
 
-function Main(){
 
-    const [ userLogs , setUserLogs ] = useState([])
+function Main() {
+    const [userLogs, setUserLogs] = useState([]);
 
-    useEffect(()=>{ //default GET
+    useEffect(() => {
         fetch(API_ALL_USERS)
-        .then((res)=>(res.json()))
-        .then((data)=>(setUserLogs(data)))
-        .catch((error)=>(
-            console.log(`sorry error fetch in...\n'${API_ALL_USERS}'\t:\t${error}`)
-        ))
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error(`Server responded with status ${res.status}`);
+                }
+                return res.json(); 
+            })
+            .then((data) => {
+                console.log('Fetched users:', data);
+                setUserLogs(data);
+            })
+            .catch((error) => {
+                console.error(`Fetch error: ${error.message}`);
+            });
+    }, []);
 
-    },[])
-
-
-    return(
+    return (
         <>
-            <Navbar/>
-            <Outlet context={userLogs}/>
+            <Navbar />
+            <Outlet context={{ userLogs, setUserLogs }} />
         </>
-    )
+    );
 }
-export default Main
+
+export default Main;
 

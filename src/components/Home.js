@@ -1,19 +1,35 @@
 import React from "react";
 import { useOutletContext } from 'react-router-dom';
 
-function Home(){
-    const userLogs = useOutletContext()
 
-    const user_names = userLogs.map((user)=>(<h6 key={user.id}>{user.name}</h6>))
-    console.log(userLogs)
-    console.log(user_names)
+function Home() {
+    const { userLogs } = useOutletContext();
 
-    return(
+    const user_names = (
+        <ol>
+            {userLogs.map((user) => (
+                <li key={user.id}>{user.name}</li>
+            ))}
+        </ol>
+    );
+
+
+    if (userLogs){
+        console.log(`true from Home.js`)
+    }else{
+        console.log(`false from Home.js`)
+    }
+
+    
+    return (
         <>
-            <header>welcome</header>
-            <div>users: {user_names}</div>
+            <header>Welcome</header>
+            <div >
+                users: {userLogs ? user_names :  <h1><br/>loading...</h1>}
+            </div>
         </>
-    )
+    );
 }
-export default Home
+
+export default Home;
 
