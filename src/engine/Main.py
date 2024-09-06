@@ -57,7 +57,10 @@ class Main:
         CONN.commit()
 
     def save(self):
-
+        existing_user = CURSOR.execute("""SELECT * FROM users WHERE email = ? """, (self.email,)).fetchone()
+        if existing_user:
+            raise ValueError('can not create duplicates')
+        
         sql = """
             INSERT INTO users (name, email)
                 VALUES (?, ?);

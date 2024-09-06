@@ -3,13 +3,16 @@ from .Sub import Sub
 
 #------------------------------------------------------------------------------     FLASK 
 
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///src/instance/database.db'    #fixed url
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///src/instance/database.db'
+# db = SQLAlchemy(app)
+
 
 CORS(app)
 
@@ -36,8 +39,8 @@ def new_user():
 
         # Create a new User instance
         new_user = Main.create(var_name, var_email)
-        db.session.add(new_user)  # Add user to the session
-        db.session.commit()       # Commit the transaction to the database
+        # db.session.add(new_user)  # Add user to the session
+        # db.session.commit()       # Commit the transaction to the database
 
         return jsonify({
             'id': new_user.id,
@@ -85,6 +88,7 @@ def users_log(foreign_id):
 
 
 #-------------------------------------------------------------- UNDER CONSTRUCTION 
+
 
 @app.route('/user/delete/<int:id>/', methods=['DELETE'])
 def del_user(user):

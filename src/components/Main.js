@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import Navbar from "./Navbar";
-const API_ALL_USERS = 'http://localhost:5000/all-users'; 
+const API_ALL_USERS = 'http://127.0.0.1:5000/all-users'; 
 
 
 function Main() {

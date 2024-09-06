@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router";
-const API = 'http://localhost:3000/new-user'
+const API = 'http://127.0.0.1:5000/new-user'
 
-// http://127.0.0.1:5000
 
 function CreateUser(){
     const {userLogs, setUserLogs} = useOutletContext()
@@ -10,8 +9,6 @@ function CreateUser(){
         stateName: '',
         stateEmail: ''
     })
-
-
     const {stateName, stateEmail} = inputForm ;
 
     const handleChange = (e)=>{
