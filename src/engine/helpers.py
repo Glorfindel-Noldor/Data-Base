@@ -5,7 +5,7 @@ from .Sub import Sub
 
 
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 
@@ -87,18 +87,33 @@ def users_log(foreign_id):
         return jsonify({'error': str(ValueError)}), 400
 
 
-#-------------------------------------------------------------- UNDER CONSTRUCTION 
-
-
 @app.route('/user/delete/<int:id>/', methods=['DELETE'])
-def del_user(user):
-    for log in user.get_all_sub():
-        log.delete()
-    user.delete()
+def del_user(id):
+    id = int(id)
+    try:
+        app.logger.debug(f"Received id: {id} of type {type(id)}")
+        
+        user = Main.get_by_id(id)
+        if not user:
+            app.logger.debug(f"User with id {id} not found")
+            return jsonify({'error': f'User with id {id} not found!'}), 404
+        
+        for log in user.get_all_sub():
+            log.delete()
+        user.delete()
+
+        return jsonify({'message': f'User {id} and their logs deleted successfully!'}), 200
+    except Exception as e:
+        app.logger.error(f"Error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+#-------------------------------------------------------------- UNDER CONSTRUCTION 
 
 
 @app.route('/user/<int:id>/delete-log/<int:log_id>', methods=['DELETE'])
 def del_log(log):
+
     log.delete()
 
 

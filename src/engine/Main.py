@@ -11,6 +11,17 @@ class Main:
         self.email= email
 
     @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        if value is None or isinstance(value, int):
+            self._id = value
+        else:
+            raise ValueError('id must be int or None')
+
+    @property
     def name(self):
         return self._name
     @name.setter
@@ -78,6 +89,8 @@ class Main:
         return new_user
 
     def delete(self):
+        #test in terminal replace 1(one) with user's id you'd like to delete
+        # curl -X DELETE http://127.0.0.1:5000/user/delete/1/
         sql = """
             DELETE FROM users
                 WHERE id = ?;
@@ -101,7 +114,7 @@ class Main:
         sql = """
             SELECT * FROM users WHERE id = ?;
         """
-        row = CURSOR.execute(sql, (id_)).fetchone()
+        row = CURSOR.execute(sql, (id_,)).fetchone()   # forgot to have a trailing comma ! did not come in as a tuple !!!!!!! BUG FIXED !!!!!!!
         return cls.instance_from_db(row) if row else None
     
     @classmethod
