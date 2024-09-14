@@ -203,7 +203,7 @@ def update_log(id):
         return jsonify({'error': str(e)}), 404
 
 
-@app.route('/user/<int:id>/all-logs/<int:foreign_id>', methods=['GET'])
+@app.route('/user/all-logs/<int:foreign_id>', methods=['GET']) #oops forgot to update route
 def all_users_logs(foreign_id):
     
     append_list = []
