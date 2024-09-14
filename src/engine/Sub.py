@@ -10,6 +10,18 @@ class Sub:
         self.foreign_id = foreign_id
     
     @property
+    def id(self):
+        return self._id
+    
+    @id.setter
+    def id(self, value):
+        if value is None or isinstance(value, int):
+            self._id = value
+        else:
+            raise ValueError(f'value must be in int form instead got: {type(value)}')
+
+
+    @property
     def log(self):
         return self._log
     
@@ -80,7 +92,7 @@ class Sub:
             SET log = ?  
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.log, ))
+        CURSOR.execute(sql, (self.log, self.id))
 
     @classmethod
     def get_by_id(cls, id):

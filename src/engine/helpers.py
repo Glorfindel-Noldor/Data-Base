@@ -28,6 +28,12 @@ CORS(app)
 @app.route('/new-user', methods=['POST'])
 def new_user():
 
+    # curl -X POST http://127.0.0.1:5000/user/create/ \
+    #  -H "Content-Type: application/json" \
+    #  -d '{"name": "John Doe", "email": "johndoe@example.com"}'
+
+
+
     try:
         data = request.get_json()
         app.logger.debug(f"Received data: {data}")
@@ -95,6 +101,7 @@ def del_user(id):
         
         user = Main.get_by_id(id)
         if not user:
+            #bash test: curl -X DELETE http://127.0.0.1:5000/user/delete/your_arg_id_here/
             app.logger.debug(f"User with id {id} not found")
             return jsonify({'error': f'User with id {id} not found!'}), 404
         
@@ -108,31 +115,106 @@ def del_user(id):
         return jsonify({'error': str(e)}), 500
 
 
-#-------------------------------------------------------------- UNDER CONSTRUCTION 
+@app.route('/delete-log/<int:log_id>', methods=['DELETE'])
+def del_log(log_id):
+
+    #bash test : curl -X DELETE http://127.0.0.1:5000/delete-log/your_arg_int_here
 
 
-@app.route('/user/<int:id>/delete-log/<int:log_id>', methods=['DELETE'])
-def del_log(log):
+    try:
 
-    log.delete()
+        if not isinstance(log_id, int):
+            raise TypeError(f'did not receive `int` for argument instead got {type(log_id)}')
+
+        log = Sub.get_by_id(log_id)
+        
+        if log:
+
+            log.delete()
+            return jsonify({'success': f'Log with id {log_id} was deleted'}), 200
+        else:
+
+            raise ValueError(f'Log with id {log_id} not found')
+
+    except TypeError as e:
+
+        app.logger.debug(str(e))
+        return jsonify({'error': str(e)}), 400
+
+    except ValueError as e:
+
+        app.logger.debug(str(e))
+        return jsonify({'error': str(e)}), 404
+
+    except Exception as e:
+
+        app.logger.error(f'Unexpected error: {str(e)}')
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 
 @app.route('/user/update/<int:id>', methods=['PUT'])
-def update_user(user):
-    user.name = input('new name')
-    user.email = input('new email')
-    user.update()
+def update_user(id):
+
+    # curl -X PUT http://127.0.0.1:5000/user/update/your_arg_id \
+    #     -H "Content-Type: application/json" \
+    #     -d '{"name": "Jane Doe", "email": "janedoe@example.com"}'
+
+    # Parsing the JSON data from the request body
+    data = request.get_json()
+    name = data.get('name')
+    email = data.get('email')
+
+    # Fetching the user by ID
+    obj = Main.get_by_id(id)
+
+    try:
+        if obj:
+            # Updating the user's name and email
+            obj.name = name
+            obj.email = email
+            obj.update()  # Assuming update() saves the changes to the DB
+            return jsonify({'message': f'User with id {id} was updated successfully'}), 200
+        else:
+            raise ValueError(f'User with id {id} not found')
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 404
 
 
-@app.route('/user/<int:id>/update-log/<int:foreign_id>', methods=['PUT'])
-def update_log(log_instance):
-    log_instance.log = input('edit log:\t')
-    log_instance.update()
+#-------------------------------------------------------------- UNDER CONSTRUCTION 
+
+
+@app.route('/update-log/<int:id>', methods=['PUT'])
+def update_log(id):
+    log_instance = Sub.get_by_id(id)
+
+    data = request.get_json()
+    log = data.get('log')
+
+    try:
+        if log_instance:
+            log_instance.log = log
+            log_instance.update()  # Commit the update to the database
+            return jsonify({'message': 'Log updated successfully.'}), 200
+        else:
+            raise ValueError(f'Log with id {id} not found.')
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 404
 
 
 @app.route('/user/<int:id>/all-logs/<int:foreign_id>', methods=['GET'])
 def all_users_logs(foreign_id):
-    logs = Sub.get_all_by_foreign_id(foreign_id)
-    for log in logs:
-        print(log.log)
+    
+    append_list = []
+    try:
+        all_logs = Sub.get_all_by_foreign_id(foreign_id)
+        if all_logs:
+            for log in all_logs:
+                append_list.append({"id": log.id ,"log": log.log})
+            return jsonify(append_list), 200
+        else:
+            raise ValueError()
+    except ValueError:
+        raise ValueError('sorry but could not retrieve user`s logs')
 

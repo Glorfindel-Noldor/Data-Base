@@ -7,6 +7,7 @@ const API_ALL_USERS = 'http://127.0.0.1:5000/all-users';
 function Main() {
     const [userLogs, setUserLogs] = useState([]);
 
+
     useEffect(() => {
         fetch(API_ALL_USERS)
             .then((res) => {
@@ -23,6 +24,7 @@ function Main() {
                 console.error(`Fetch error: ${error.message}`);
             });
     }, []);
+
 
     return (
         <>
