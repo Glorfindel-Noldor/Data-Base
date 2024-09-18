@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import Navbar from "./Navbar";
-const API_ALL_USERS = 'http://127.0.0.1:5000/all-users'; 
+const BASE_LINK = 'http://127.0.0.1:5000'; 
 
 
 function Main() {
-    const [userLogs, setUserLogs] = useState([]);
+    const [users, setUsers] = useState([])
+    const [logs, setLogs] = useState([])
+ 
+    const GET = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+    }
 
 
     useEffect(() => {
-        fetch(API_ALL_USERS)
+
+        fetch(BASE_LINK + '/all-users',GET)
             .then((res) => {
                 if (!res.ok) {
                     throw Error(`Server responded with status ${res.status}`);
                 }
                 return res.json(); 
             })
-            .then((data) => {
-                console.log('Fetched users:', data);
-                setUserLogs(data);
-            })
+            .then((data) => (
+                setUsers(data)
+            ))
             .catch((error) => {
                 console.error(`Fetch error: ${error.message}`);
             });
@@ -29,10 +38,42 @@ function Main() {
     return (
         <>
             <Navbar />
-            <Outlet context={{ userLogs, setUserLogs }} />
+            <Outlet context={{ users, logs, setLogs, BASE_LINK }} />
         </>
     );
 }
 
+
 export default Main;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // const POST = (newPost) => {
+    //     method: 'POST',
+    //     headers: {
+    //       'Accept': 'application/json',
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(newPost)
+    // }
+
+    // const PUT = (edit)=> {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Accept': 'application/json',
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(edit)
+    // }

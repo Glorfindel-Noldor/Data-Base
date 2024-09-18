@@ -4,7 +4,7 @@ const API = 'http://127.0.0.1:5000/new-user'
 
 
 function CreateUser(){
-    const {userLogs, setUserLogs} = useOutletContext()
+    const {users, setUsers} = useOutletContext()
     const [inputForm , setInputForm] = useState({
         stateName: '',
         stateEmail: ''
@@ -47,6 +47,7 @@ function CreateUser(){
                 'body': JSON.stringify(newJsonPost)
         }
 
+        
         fetch(API,POST)
         .then((res) => {
             if (!res.ok) {
@@ -54,7 +55,7 @@ function CreateUser(){
             }
             return res.json();
         })
-        .then((newPush)=>(setUserLogs([newPush,...userLogs])))
+        .then((newPush)=>(setUsers([newPush,...users])))
         .catch((error)=>(
             console.log(`POST ERROR : ${error}`)
         ))
