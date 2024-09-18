@@ -7,8 +7,6 @@ const BASE_LINK = 'http://127.0.0.1:5000';
 function Main() {
     const [users, setUsers] = useState([])
     const [logs, setLogs] = useState([])
- 
-
 
 
     useEffect(() => {
@@ -20,7 +18,6 @@ function Main() {
               'Content-Type': 'application/json'
             }
         }
-
         
         fetch(BASE_LINK + '/all-users',GET)
             .then((res) => {
@@ -44,6 +41,8 @@ function Main() {
             <Outlet context={{ users, logs, setLogs, BASE_LINK }} />
         </>
     );
+
+    
 }
 
 

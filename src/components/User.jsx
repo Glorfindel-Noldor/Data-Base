@@ -34,6 +34,23 @@ function User() {
         return <h6>No user information found. Please log in.</h6>;
     }
 
+    const handleDelete = (id) => {
+
+        const DELETE = {
+            method: 'DELETE', 
+        }
+
+
+
+        fetch(`http://127.0.0.1:5000/delete-log/${id}`, DELETE)
+            .then(res => res.json())
+            .then(() =>
+                setLogs((logs) => logs.filter(log => log.id !== id))
+            )
+            .catch(error => console.log(error));
+    };
+
+
 
     return (
         <>
@@ -50,7 +67,7 @@ function User() {
             <ul>
                 {logs.length > 0 ? (
                     logs.map((log) => (
-                        <li key={log.id}>
+                        <li key={log.id} className="glass" onClick={()=>handleDelete(log.id)}>
                             {log.log}
                         </li>
                     ))

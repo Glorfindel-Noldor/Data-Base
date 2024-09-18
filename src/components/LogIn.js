@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
+
 const API = 'http://127.0.0.1:5000/all-users';
+
 
 function LogIn() {
     const [inputForm, setInputForm] = useState({
@@ -72,4 +74,6 @@ function LogIn() {
     );
 }
 
+
 export default LogIn;
+

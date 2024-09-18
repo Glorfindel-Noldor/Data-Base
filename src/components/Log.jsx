@@ -52,6 +52,7 @@ function Log({ foreign_id, logs, setLogs }) {
             });
     };
 
+    
     return (
         <>
             <p>Create some logs!</p>

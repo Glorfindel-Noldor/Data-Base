@@ -1,6 +1,7 @@
 from .Main import Main
 from .Sub import Sub
 
+
 #------------------------------------------------------------------------------     FLASK 
 
 
@@ -120,38 +121,25 @@ def del_user(id):
 
 @app.route('/delete-log/<int:log_id>', methods=['DELETE'])
 def del_log(log_id):
-
     #bash test : curl -X DELETE http://127.0.0.1:5000/delete-log/your_arg_int_here
-
-
+    
     try:
-
-        if not isinstance(log_id, int):
-            raise TypeError(f'did not receive `int` for argument instead got {type(log_id)}')
-
         log = Sub.get_by_id(log_id)
-        
-        if log:
 
+        if log:
             log.delete()
+            app.logger.info(f"Log with id {log_id} was deleted successfully.")
             return jsonify({'success': f'Log with id {log_id} was deleted'}), 200
         else:
-
-            raise ValueError(f'Log with id {log_id} not found')
-
-    except TypeError as e:
-
-        app.logger.debug(str(e))
-        return jsonify({'error': str(e)}), 400
+            app.logger.warning(f"Log with id {log_id} not found.")
+            return jsonify({'error': f'Log with id {log_id} not found'}), 404
 
     except ValueError as e:
-
-        app.logger.debug(str(e))
-        return jsonify({'error': str(e)}), 404
+        app.logger.debug(f"ValueError: {str(e)}")
+        return jsonify({'error': str(e)}), 400
 
     except Exception as e:
-
-        app.logger.error(f'Unexpected error: {str(e)}')
+        app.logger.error(f"Unexpected error: {str(e)}")
         return jsonify({'error': 'Internal Server Error'}), 500
 
 
