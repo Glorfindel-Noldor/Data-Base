@@ -5,28 +5,21 @@ from .Sub import Sub
 
 
 from flask import Flask, request, jsonify
-# from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///src/instance/database.db'
-# db = SQLAlchemy(app)
 
 
-CORS(app)
-
-
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(80), nullable=False)
-#     email = db.Column(db.String(120), unique=True, nullable=False)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 #------------------------------------------------------------------------------     ^
 
 
 @app.route('/new-user', methods=['POST'])
 def new_user():
+
 
     # curl -X POST http://127.0.0.1:5000/user/create/ \
     #  -H "Content-Type: application/json" \
@@ -43,10 +36,9 @@ def new_user():
         if not var_name or not var_email:
             raise ValueError('User name and email are required.')
 
-        # Create a new User instance
+
         new_user = Main.create(var_name, var_email)
-        # db.session.add(new_user)  # Add user to the session
-        # db.session.commit()       # Commit the transaction to the database
+
 
         return jsonify({
             'id': new_user.id,
@@ -76,24 +68,35 @@ def all_users():
         return jsonify({'error': str(ValueError)}), 500
 
 
-@app.route('/user/<int:id>/new-log/', methods=['POST'])
+@app.route('/user/<int:foreign_id>/new-log', methods=['POST'])
 def users_log(foreign_id):
+
+    app.logger.debug(f"Received foreign_id: {foreign_id}")
+    app.logger.debug(f"Received data: {request.get_json()}")
+
     try:
-        data = request.json
-        var_log = data.get('log')
-        
+        log_data = request.get_json()
+        var_log = log_data.get('log')
+
         if not var_log:
-            raise ValueError('var_log must be str and var_foreign_id must be int')
+            raise ValueError('Log content is required')
+
         new_log = Sub.create(var_log, foreign_id)
+
         return jsonify({
-            'log'           : new_log.log,
-            'foreign_id'    : new_log.foreign_id
+            'log': new_log.log,
+            'foreign_id': new_log.foreign_id
         }), 201
-    except ValueError:
-        return jsonify({'error': str(ValueError)}), 400
+
+    except ValueError as e:
+        app.logger.error(f"ValueError: {str(e)}")
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        app.logger.error(f"Unexpected error: {str(e)}")
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 
-@app.route('/user/delete/<int:id>/', methods=['DELETE'])
+@app.route('/user/delete/<int:id>', methods=['DELETE'])
 def del_user(id):
     id = int(id)
     try:
@@ -181,9 +184,6 @@ def update_user(id):
         return jsonify({'error': str(e)}), 404
 
 
-#-------------------------------------------------------------- UNDER CONSTRUCTION 
-
-
 @app.route('/update-log/<int:id>', methods=['PUT'])
 def update_log(id):
     log_instance = Sub.get_by_id(id)
@@ -203,18 +203,27 @@ def update_log(id):
         return jsonify({'error': str(e)}), 404
 
 
-@app.route('/user/all-logs/<int:foreign_id>', methods=['GET']) #oops forgot to update route
+@app.route('/user/all-logs/<int:foreign_id>', methods=['GET']) 
 def all_users_logs(foreign_id):
-    
-    append_list = []
     try:
         all_logs = Sub.get_all_by_foreign_id(foreign_id)
-        if all_logs:
-            for log in all_logs:
-                append_list.append({"id": log.id ,"log": log.log})
-            return jsonify(append_list), 200
-        else:
-            raise ValueError()
-    except ValueError:
-        raise ValueError('sorry but could not retrieve user`s logs')
+        
+        if all_logs is None or len(all_logs) == 0:
+            # No logs found, return empty list
+            return jsonify([]), 200
+        
+        # If logs exist, format and return them
+        log_list = [{
+            'id': log.id,
+            'log': log.log,
+            'foreign_id': log.foreign_id
+        } for log in all_logs]
+        
+        return jsonify(log_list), 200
+    
+    except Exception as e:
+        print(f"Error fetching logs: {e}")
+        return jsonify({'error': 'An error occurred'}), 500
+
+#-------------------------------------------------------------- UNDER CONSTRUCTION 
 

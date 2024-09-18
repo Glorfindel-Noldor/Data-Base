@@ -130,7 +130,9 @@ class Main:
         sql = """
             SELECT * FROM logs WHERE foreign_id = ? ;
         """
-        rows = CURSOR.execute(sql, (self.id, )).fetchall()
+        rows = CURSOR.execute(sql, (self.id, )).fetchall()   
+        if not rows:
+            return []   
         return [Sub.instance_from_db(row) for row in rows]
 
     @classmethod

@@ -4,6 +4,9 @@ import Readme from "./components/Readme"
 import Broken from "./components/Broken"
 import LogIn from "./components/LogIn"
 import CreateUser from "./components/CreateUser"
+import CreateLog from "./components/CreateLog"
+import User from "./components/User"
+import Log from "./components/Log"
 
 const routes = [
     {
@@ -26,9 +29,25 @@ const routes = [
             {
                 path : "create-user",
                 element : <CreateUser/>
-            }
+            },
+            {
+                path : "new-log",
+                element : <CreateLog/>
+            },
+
         ]
     },
+    {
+        path : "user",
+        element : <User/>,
+        children : [
+            {
+                path: "log",
+                element: <Log/>
+            },
+        ]
+    }
+
 ]
 
 export default routes

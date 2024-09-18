@@ -26,7 +26,6 @@ function LogIn() {
             .then(res => res.json())
             .then(data => {
                 try {
-                    // Find the user where both email and name match
                     const matchedUser = data.find(user => user.email.toLowerCase() === email.toLowerCase() && user.name.toLowerCase() === name.toLowerCase());
                     
                     if (matchedUser) {

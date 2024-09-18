@@ -1,9 +1,8 @@
-import { toBeEmptyDOMElement } from "@testing-library/jest-dom/matchers";
-import React, { useEffect } from "react";
-import { json, useOutletContext } from 'react-router-dom';
+import React from "react";
+// import { useOutletContext } from 'react-router-dom';
 
 function Home() {
-    const { users, logs, setLogs, BASE_LINK } = useOutletContext();
+    // const { users, logs, setLogs, BASE_LINK } = useOutletContext();
 
     
 

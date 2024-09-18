@@ -4,7 +4,7 @@ class Sub:
 
     all = {}
 
-    def __init__(self, id, log, foreign_id):
+    def __init__(self, id, log, foreign_id = None):
         self.id = id
         self.log = log
         self.foreign_id = foreign_id
@@ -107,8 +107,12 @@ class Sub:
         sql = """
             SELECT * FROM logs WHERE foreign_id = ? ;
         """
-        rows = CURSOR.execute(sql, (foreign_id, )).fetchall()
-        return [cls.instance_from_db(row) for row in rows]
+        try:
+            rows = CURSOR.execute(sql, (foreign_id, )).fetchall()
+            return [cls.instance_from_db(row) for row in rows]
+        except:
+            return []
+
 
     @classmethod
     def instance_from_db(cls, row):

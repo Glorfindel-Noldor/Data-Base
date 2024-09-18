@@ -8,17 +8,20 @@ function Main() {
     const [users, setUsers] = useState([])
     const [logs, setLogs] = useState([])
  
-    const GET = {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-    }
+
 
 
     useEffect(() => {
 
+        const GET = {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+        }
+
+        
         fetch(BASE_LINK + '/all-users',GET)
             .then((res) => {
                 if (!res.ok) {
@@ -60,14 +63,7 @@ export default Main;
 
 
 
-    // const POST = (newPost) => {
-    //     method: 'POST',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(newPost)
-    // }
+
 
     // const PUT = (edit)=> {
     //     method: 'PUT',
