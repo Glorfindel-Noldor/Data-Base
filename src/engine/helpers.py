@@ -151,19 +151,23 @@ def update_user(id):
     #     -d '{"name": "Jane Doe", "email": "janedoe@example.com"}'
 
     # Parsing the JSON data from the request body
+    # Parsing the JSON data from the request body
+
+
     data = request.get_json()
     name = data.get('name')
     email = data.get('email')
 
-    # Fetching the user by ID
+    if not name or not email:
+        return jsonify({'error': 'Name and email must be provided'}), 400
+
     obj = Main.get_by_id(id)
 
     try:
         if obj:
-            # Updating the user's name and email
             obj.name = name
             obj.email = email
-            obj.update()  # Assuming update() saves the changes to the DB
+            obj.update()
             return jsonify({'message': f'User with id {id} was updated successfully'}), 200
         else:
             raise ValueError(f'User with id {id} not found')
@@ -171,6 +175,8 @@ def update_user(id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
 
+    except Exception as e:
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
 
 @app.route('/update-log/<int:id>', methods=['PUT'])
 def update_log(id):

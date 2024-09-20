@@ -88,7 +88,7 @@ function CreateUser(){
                     onChange={handleChange}
                     placeholder="email"
                 /><br/>
-                <input type="submit" placeholder="submit"/>
+                <input type="submit" value="create!"/>
             </form>
         </div>
     )

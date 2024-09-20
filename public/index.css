@@ -31,3 +31,33 @@
     -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+.to-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Ensures the element spans the full width */
+    background-color: #ff0000; /* Optional: set background color */
+    padding: 10px; /* Optional: set padding */
+    text-align: center; /* Optional: center the content */
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1); /* Optional: shadow effect */
+    z-index: 100; /* Ensure it stays above other content */
+}
+
+.to-bottom-three-fourths {
+    position: fixed;
+    bottom: 0;
+    background-color: red;
+    left: 90%; /* Align at 3/4ths of the page */
+    transform: translateX(-130%); /* Adjust to center the element around the 75% mark */
+    width: 25%; /* Set the width to match desired layout */
+}
+
+.to-bottom-center {
+    position: fixed;
+    bottom: 0;
+    background-color: blue;
+    left: 30%;
+    transform: translateX(-60%); /* Centers the element horizontally */
+    width: 25%; /* Set the width to 2/4th (50%) of the page */
+}

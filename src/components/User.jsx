@@ -11,7 +11,7 @@ function User() {
 
 
     useEffect(() => {
-        if (id) { 
+        if (email) { 
             const fetchLogs = async () => {
                 try {
                     const response = await fetch(`http://127.0.0.1:5000/user/all-logs/${id}`);
@@ -27,19 +27,20 @@ function User() {
 
             fetchLogs();
         }
-    }, [id]);  
+    }, [email, id]);  
 
 
     if (!userInfo) {
         return <h6>No user information found. Please log in.</h6>;
     }
 
+
+    const DELETE = {
+        method: 'DELETE', 
+    }
+
+
     const handleDelete = (id) => {
-
-        const DELETE = {
-            method: 'DELETE', 
-        }
-
 
 
         fetch(`http://127.0.0.1:5000/delete-log/${id}`, DELETE)
@@ -50,6 +51,20 @@ function User() {
             .catch(error => console.log(error));
     };
 
+
+    const deleteUser = () => {
+        fetch(`http://127.0.0.1:5000/user/delete/${id}`, DELETE)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(() => {
+                window.location.href = '/home';
+            })
+            .catch(error => console.log(error));
+    };
 
 
     return (
@@ -75,10 +90,12 @@ function User() {
                     <p>No logs found</p>
                 )}
             </ul>
-            <Log foreign_id={id} logs={logs} setLogs={setLogs} />
+            <Log foreign_id={id} logs={logs} setLogs={setLogs} userName={name}/>
+            <button className="to-bottom-three-fourths" onClick={deleteUser}>DELETE: {email.toUpperCase()}</button>
         </>
     );
 }
+
 
 export default User;
 
